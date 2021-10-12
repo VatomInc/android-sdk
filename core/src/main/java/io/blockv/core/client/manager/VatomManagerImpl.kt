@@ -187,7 +187,8 @@ class VatomManagerImpl(
     }
       .toFlowable()
       .flatMap {
-        datapool.inventory.getVatoms(
+        datapool.inventory.
+        getVatoms(
           ids,
           orderBy,
           filter,
