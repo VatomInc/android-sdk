@@ -10,6 +10,7 @@
  */
 package io.blockv.common.internal.json
 
+import android.util.Log
 import io.blockv.common.internal.json.serializer.GenericSerializer
 import io.blockv.common.internal.json.serializer.Serializer
 import io.blockv.common.internal.json.serializer.custom.ActionSerializer
@@ -47,6 +48,7 @@ class JsonModule {
 
   fun <T : Model> deserialize(kclass: KClass<T>, json: JSONObject): T? {
     val serializer = serializers[kclass]
+    Log.d("myT", "deserialize: $json")
     return (serializer ?: genericSerializer).deserialize(kclass, json, serializers) as T
   }
 

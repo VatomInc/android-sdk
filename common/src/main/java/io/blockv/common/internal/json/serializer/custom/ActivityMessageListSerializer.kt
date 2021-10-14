@@ -34,6 +34,7 @@ class ActivityMessageListSerializer : Serializer<ActivityMessageList> {
     serializers: Map<KClass<*>, Serializer<Any>>
   ): ActivityMessageList? {
 
+    Log.d("myT", "deserialize: $data")
     val jsonMessages = data.getJSONArray("messages") ?: JSONArray()
     val messages = ArrayList<ActivityMessage>()
 
