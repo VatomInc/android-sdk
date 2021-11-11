@@ -13,6 +13,7 @@ import io.blockv.face.client.FaceView
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.json.JSONObject
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 internal class WebPresenterImpl(
@@ -66,8 +67,8 @@ internal class WebPresenterImpl(
 
     val message = Bridge.Message(JSONObject(data))
 
-    if ((message.version == "1.0.0" && message.source.toLowerCase() != "vatom")
-      || (message.version != "1.0.0" && message.source.toLowerCase() != "blockv_face_sdk")
+    if ((message.version == "1.0.0" && message.source.lowercase(Locale.getDefault()) != "vatom")
+      || (message.version != "1.0.0" && message.source.lowercase(Locale.getDefault()) != "blockv_face_sdk")
     ) {
       throw Exception("Unsupported source - ${message.source}")
     }

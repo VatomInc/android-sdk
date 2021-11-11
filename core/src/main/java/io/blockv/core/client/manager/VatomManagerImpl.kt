@@ -34,6 +34,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class VatomManagerImpl(
   val api: VatomApi,
@@ -48,13 +51,13 @@ class VatomManagerImpl(
     filter: VatomManager.GeoFilter
   ): Single<List<Vatom>> = Single.fromCallable {
     api.geoDiscover(
-      GeoRequest(
-        bottomLeftLon,
-        bottomLeftLat,
-        topRightLon,
-        topRightLat,
-        filter.name.toLowerCase()
-      )
+        GeoRequest(
+            bottomLeftLon,
+            bottomLeftLat,
+            topRightLon,
+            topRightLat,
+            filter.name.lowercase(Locale.getDefault())
+        )
     ).payload
   }
     .subscribeOn(Schedulers.io())
@@ -78,14 +81,14 @@ class VatomManagerImpl(
     filter: VatomManager.GeoFilter
   ): Single<List<GeoGroup>> = Single.fromCallable {
     api.geoGroupDiscover(
-      GeoGroupRequest(
-        bottomLeftLon,
-        bottomLeftLat,
-        topRightLon,
-        topRightLat,
-        precision,
-        filter.name.toLowerCase()
-      )
+        GeoGroupRequest(
+            bottomLeftLon,
+            bottomLeftLat,
+            topRightLon,
+            topRightLat,
+            precision,
+            filter.name.lowercase(Locale.getDefault())
+        )
     ).payload
   }
     .subscribeOn(Schedulers.io())

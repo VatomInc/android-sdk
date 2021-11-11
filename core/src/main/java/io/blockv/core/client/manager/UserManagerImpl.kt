@@ -54,7 +54,12 @@ class UserManagerImpl(
     tokenType: UserManager.TokenType,
     isDefault: Boolean
   ): Single<Token> = Single.fromCallable {
-    api.createUserToken(CreateTokenRequest(tokenType.name.toLowerCase(), token, isDefault)).payload
+    api.createUserToken(
+        CreateTokenRequest(
+            tokenType.name.lowercase(Locale.getDefault()),
+            token,
+            isDefault
+        )).payload
   }
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
@@ -119,11 +124,11 @@ class UserManagerImpl(
     password: String
   ): Single<User> = Single.fromCallable {
     api.login(
-      LoginRequest(
-        tokenType.name.toLowerCase(),
-        token,
-        password
-      )
+        LoginRequest(
+            tokenType.name.lowercase(Locale.getDefault()),
+            token,
+            password
+        )
     ).payload
   }
     .subscribeOn(Schedulers.io())
@@ -208,7 +213,7 @@ class UserManagerImpl(
     tokenType: UserManager.TokenType,
     code: String
   ): Single<JSONObject> = Single.fromCallable {
-    api.verifyToken(VerifyTokenRequest(tokenType.name.toLowerCase(), token, code)).payload
+    api.verifyToken(VerifyTokenRequest(tokenType.name.lowercase(Locale.getDefault()), token, code)).payload
   }
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
@@ -217,7 +222,7 @@ class UserManagerImpl(
     token: String,
     tokenType: UserManager.TokenType
   ): Single<JSONObject> = Single.fromCallable {
-    api.resetToken(ResetTokenRequest(tokenType.name.toLowerCase(), token)).payload
+    api.resetToken(ResetTokenRequest(tokenType.name.lowercase(Locale.getDefault()), token)).payload
   }
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
@@ -226,7 +231,11 @@ class UserManagerImpl(
     token: String,
     tokenType: UserManager.TokenType
   ): Single<JSONObject> = Single.fromCallable {
-    api.resetVerificationToken(ResetTokenRequest(tokenType.name.toLowerCase(), token)).payload
+    api.resetVerificationToken(
+        ResetTokenRequest(
+            tokenType.name.lowercase(Locale.getDefault()),
+            token
+        )).payload
   }
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())

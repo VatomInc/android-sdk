@@ -23,6 +23,8 @@ import io.blockv.face.client.manager.MessageManager
 import io.blockv.face.client.manager.ResourceManager
 import io.reactivex.Single
 import org.json.JSONObject
+import java.util.*
+import kotlin.collections.ArrayList
 
 interface FaceManager {
 
@@ -76,44 +78,44 @@ interface FaceManager {
           var rating = 0
           for (face in faces) {
 
-            if (face.property.viewMode != viewMode) {
-              continue
-            }
-            //possibly turn into helper function isAndroid, isGeneric, isSupported
-            var rate = when (face.property.platform.toLowerCase()) {
-              "android" -> {
-                2
+              if (face.property.viewMode != viewMode) {
+                  continue
               }
-              "generic" -> {
-                1
+              //possibly turn into helper function isAndroid, isGeneric, isSupported
+              var rate = when (face.property.platform.lowercase(Locale.getDefault())) {
+                  "android" -> {
+                      2
+                  }
+                  "generic" -> {
+                      1
+                  }
+                  else -> {
+                      -1
+                  }
               }
-              else -> {
-                -1
-              }
-            }
-            if (rate == -1) continue
+              if (rate == -1) continue
 
-            if (face.isNative()) {
-              //check that the face is registered
-              if (faceRegistry.indexOf(face.property.displayUrl) == -1) {
-                continue
+              if (face.isNative()) {
+                  //check that the face is registered
+                  if (faceRegistry.indexOf(face.property.displayUrl) == -1) {
+                      continue
+                  }
+                  rate += 1
+              } else {
+                  //check if a web face is registered
+                  if (faceRegistry.indexOf("https://*") == -1) {
+                      continue
+                  }
               }
-              rate += 1
-            } else {
-              //check if a web face is registered
-              if (faceRegistry.indexOf("https://*") == -1) {
-                continue
-              }
-            }
 
-            if (rate > rating) {
-              rating = rate
-              selectedFaces.clear()
-              selectedFaces.add(face)
-            } else
-              if (rate == rating) {
-                selectedFaces.add(face)
-              }
+              if (rate > rating) {
+                  rating = rate
+                  selectedFaces.clear()
+                  selectedFaces.add(face)
+              } else
+                  if (rate == rating) {
+                      selectedFaces.add(face)
+                  }
           }
           selectedFaces
         }

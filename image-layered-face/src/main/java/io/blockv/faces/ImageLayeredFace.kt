@@ -80,11 +80,11 @@ class ImageLayeredFace(vatom: Vatom, face: Face, bridge: FaceBridge) : FaceView(
           .map {
             val imageView = ImageView(layeredContainer.context)
             baseLayer = imageView
-            if (config.scale.toLowerCase() == "fill") {
-              imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-            } else {
-              imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-            }
+              if (config.scale.lowercase(Locale.getDefault()) == "fill") {
+                  imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+              } else {
+                  imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+              }
             imageView.setImageBitmap(it)
             imageView.tag = vatom.property.templateVariationId
             layeredContainer.addView(imageView)
@@ -295,11 +295,11 @@ class ImageLayeredFace(vatom: Vatom, face: Face, bridge: FaceBridge) : FaceView(
           val current = layeredContainer.findViewWithTag<ImageView>(layer.first)
           if (current == null) {
             val imageView = ImageView(layeredContainer.context)
-            if (config.scale.toLowerCase() == "fill") {
-              imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-            } else {
-              imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-            }
+              if (config.scale.lowercase(Locale.getDefault()) == "fill") {
+                  imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+              } else {
+                  imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+              }
             imageView.setImageBitmap(layer.second)
             imageView.tag = layer.first
             if (animate) {

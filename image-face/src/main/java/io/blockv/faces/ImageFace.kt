@@ -21,6 +21,7 @@ import io.blockv.face.client.FaceBridge
 import io.blockv.face.client.FaceView
 import io.blockv.face.client.ViewFactory
 import io.reactivex.android.schedulers.AndroidSchedulers
+import java.util.*
 
 class ImageFace(vatom: Vatom, face: Face, bridge: FaceBridge) : FaceView(vatom, face, bridge) {
 
@@ -33,11 +34,11 @@ class ImageFace(vatom: Vatom, face: Face, bridge: FaceBridge) : FaceView(vatom, 
 
   override fun onLoad(handler: FaceView.LoadHandler) {
     val config = Config(face)
-    if (config.scale.toLowerCase() == "fill") {
-      this.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-    } else {
-      this.imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-    }
+      if (config.scale.lowercase(Locale.getDefault()) == "fill") {
+          this.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+      } else {
+          this.imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+      }
 
     val resource = vatom.property.getResource(config.image)
     if (resource != null) {

@@ -30,6 +30,8 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONObject
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ImageProgressFace(vatom: Vatom, face: Face, bridge: FaceBridge) : FaceView(vatom, face, bridge) {
 
@@ -153,56 +155,56 @@ class ImageProgressFace(vatom: Vatom, face: Face, bridge: FaceBridge) : FaceView
     )
   }
 
-  private fun layout() {
-    // Set progress label
-    val cloningScore = vatom.property.cloningScore ?: 0f
-    val progress = Math.min(1.0f, Math.max(0.0f, cloningScore))
-    val progressPercent = (progress * 100.0).toInt()
-    progressLabel.text = "$progressPercent%"
+    private fun layout() {
+        // Set progress label
+        val cloningScore = vatom.property.cloningScore ?: 0f
+        val progress = Math.min(1.0f, Math.max(0.0f, cloningScore))
+        val progressPercent = (progress * 100.0).toInt()
+        progressLabel.text = "$progressPercent%"
 
-    var paddingStart = config.paddingStart
-    var paddingEnd = config.paddingEnd
-    val direction = config.direction.toLowerCase()
+        var paddingStart = config.paddingStart
+        var paddingEnd = config.paddingEnd
+        val direction = config.direction.lowercase(Locale.getDefault())
 
-    val imageWidth = this.fullImageView.width.toFloat()
-    val imageHeight = this.fullImageView.height.toFloat()
+        val imageWidth = this.fullImageView.width.toFloat()
+        val imageHeight = this.fullImageView.height.toFloat()
 
-    val imageData = getSizeOffset(this.fullImageView)
-    val actualWidth = imageData[2].toFloat()
-    val actualHeight = imageData[3].toFloat()
-    val offsetLeft = imageData[0].toFloat()
-    val offsetTop = imageData[1].toFloat()
-    val offsetRight = imageWidth - offsetLeft - actualWidth
-    val offsetBottom = imageHeight - offsetTop - actualHeight
+        val imageData = getSizeOffset(this.fullImageView)
+        val actualWidth = imageData[2].toFloat()
+        val actualHeight = imageData[3].toFloat()
+        val offsetLeft = imageData[0].toFloat()
+        val offsetTop = imageData[1].toFloat()
+        val offsetRight = imageWidth - offsetLeft - actualWidth
+        val offsetBottom = imageHeight - offsetTop - actualHeight
 
-    when (direction) {
-      "down", "up" -> {
+        when (direction) {
+            "down", "up" -> {
 
-        paddingStart *= (actualHeight / originalHeight)
-        paddingEnd *= (actualHeight / originalHeight)
+                paddingStart *= (actualHeight / originalHeight)
+                paddingEnd *= (actualHeight / originalHeight)
 
-        val offsetRange = actualHeight - paddingStart - paddingEnd
-        val offset =
-          ((1 - progress) * offsetRange + if (direction == "up") offsetTop + paddingEnd else offsetBottom + paddingStart) * if (direction == "up") 1 else -1
+                val offsetRange = actualHeight - paddingStart - paddingEnd
+                val offset =
+                    ((1 - progress) * offsetRange + if (direction == "up") offsetTop + paddingEnd else offsetBottom + paddingStart) * if (direction == "up") 1 else -1
 
-        fullImageContainer.y = offset
-        fullImageView.y = -offset
-      }
-      "right", "left" -> {
+                fullImageContainer.y = offset
+                fullImageView.y = -offset
+            }
+            "right", "left" -> {
 
-        paddingStart *= (actualWidth / originalWidth)
-        paddingEnd *= (actualWidth / originalWidth)
+                paddingStart *= (actualWidth / originalWidth)
+                paddingEnd *= (actualWidth / originalWidth)
 
-        val offsetRange = actualWidth - paddingStart - paddingEnd
-        val offset =
-          ((1 - progress) * offsetRange + if (direction == "left") offsetRight + paddingStart else offsetLeft + paddingEnd) * if (direction == "left") 1 else -1
+                val offsetRange = actualWidth - paddingStart - paddingEnd
+                val offset =
+                    ((1 - progress) * offsetRange + if (direction == "left") offsetRight + paddingStart else offsetLeft + paddingEnd) * if (direction == "left") 1 else -1
 
-        fullImageContainer.x = offset
-        fullImageView.x = -offset
-      }
+                fullImageContainer.x = offset
+                fullImageView.x = -offset
+            }
+        }
+
     }
-
-  }
 
   /**
    * Returns the bitmap position and size inside an imageView.

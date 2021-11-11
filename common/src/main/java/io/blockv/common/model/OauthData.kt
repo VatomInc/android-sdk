@@ -1,5 +1,7 @@
 package io.blockv.common.model
 
+import java.util.*
+
 class OauthData(
   val user: User,
   val flow: Flow
@@ -20,11 +22,11 @@ class OauthData(
 
     companion object {
       fun from(flow: String): Flow {
-        return when (flow.toLowerCase()) {
-          "login" -> LOGIN
-          "register" -> REGISTER
-          else -> OTHER
-        }
+          return when (flow.lowercase(Locale.getDefault())) {
+              "login" -> LOGIN
+              "register" -> REGISTER
+              else -> OTHER
+          }
       }
     }
   }

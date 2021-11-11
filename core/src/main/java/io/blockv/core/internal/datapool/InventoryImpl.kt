@@ -34,7 +34,10 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONObject
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class InventoryImpl(
   val vatomApi: VatomApi,
@@ -88,23 +91,24 @@ class InventoryImpl(
               } else
                 if (message.type == WebSocketEvent.MessageType.STATE_UPDATE) {
                   val event = jsonModule.deserialize<StateUpdateEvent>(message.payload!!)
-                  if (event.operation.toLowerCase() == "update") {
-                    val dbVatoms = database.vatomDao().getVatoms(listOf(event.vatomId)).blockingFirst()
-                    if (dbVatoms.isNotEmpty() && dbVatoms.first().vatom != null
-                      && (
-                        event.vatomProperties
-                          .optJSONObject("vAtom::vAtomType")
-                          ?.optString("owner", null) == null
-                          || event.vatomProperties
-                          .optJSONObject("vAtom::vAtomType")
-                          ?.optString("owner") == dbVatoms.first().vatom?.property?.owner)
-                    ) {
-                      val json = jsonModule.serialize(dbVatoms.first().vatom!!)!!
-                      JsonUtil.merge(json, event.vatomProperties)
-                      val vatom = jsonModule.deserialize<Vatom>(json)
-                      database.vatomDao().addOrUpdateVatoms(listOf(vatom)).blockingGet()
+                    if (event.operation.lowercase(Locale.getDefault()) == "update") {
+                        val dbVatoms =
+                            database.vatomDao().getVatoms(listOf(event.vatomId)).blockingFirst()
+                        if (dbVatoms.isNotEmpty() && dbVatoms.first().vatom != null
+                            && (
+                                    event.vatomProperties
+                                        .optJSONObject("vAtom::vAtomType")
+                                        ?.optString("owner", null) == null
+                                            || event.vatomProperties
+                                        .optJSONObject("vAtom::vAtomType")
+                                        ?.optString("owner") == dbVatoms.first().vatom?.property?.owner)
+                        ) {
+                            val json = jsonModule.serialize(dbVatoms.first().vatom!!)!!
+                            JsonUtil.merge(json, event.vatomProperties)
+                            val vatom = jsonModule.deserialize<Vatom>(json)
+                            database.vatomDao().addOrUpdateVatoms(listOf(vatom)).blockingGet()
+                        }
                     }
-                  }
                 }
             } catch (e: Exception) {
               e.printStackTrace()
@@ -548,20 +552,20 @@ class InventoryImpl(
       .filter { it.isNotEmpty() && it.first().vatom != null }
       .map { it.first().vatom!! }
       .flatMapSingle<Unit> { vatom ->
-        when (action.toLowerCase()) {
-          "transfer", "redeem", "trash" -> {
-            database.vatomDao()
-              .removeVatom(listOf(vatom))
-              .map { Unit }
+          when (action.lowercase(Locale.getDefault())) {
+              "transfer", "redeem", "trash" -> {
+                  database.vatomDao()
+                      .removeVatom(listOf(vatom))
+                      .map { Unit }
+              }
+              "drop" -> {
+                  vatom.property.isDropped = true
+                  database.vatomDao()
+                      .addOrUpdateVatoms(listOf(vatom))
+                      .map { Unit }
+              }
+              else -> Single.just(Unit)
           }
-          "drop" -> {
-            vatom.property.isDropped = true
-            database.vatomDao()
-              .addOrUpdateVatoms(listOf(vatom))
-              .map { Unit }
-          }
-          else -> Single.just(Unit)
-        }
       }
       .subscribeOn(Schedulers.io())
   }

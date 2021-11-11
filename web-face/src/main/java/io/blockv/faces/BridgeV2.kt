@@ -10,6 +10,7 @@ import io.reactivex.schedulers.Schedulers
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.*
 
 internal class BridgeV2(
   bridge: FaceBridge,
@@ -78,11 +79,11 @@ internal class BridgeV2(
                   sendMessage(message.requestId, message.payload)
                 }, {
                   if (it is MessageManager.MessageException) {
-                    sendErrorMessage(
-                      message.requestId,
-                      it.error.name.toLowerCase(),
-                      it.message ?: ""
-                    )
+                      sendErrorMessage(
+                          message.requestId,
+                          it.error.name.lowercase(Locale.getDefault()),
+                          it.message ?: ""
+                      )
                   } else
                     sendErrorMessage(message.requestId, Error.VIEWER_ERROR.code, it.message ?: "")
                 })

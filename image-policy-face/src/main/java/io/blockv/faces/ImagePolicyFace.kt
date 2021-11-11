@@ -60,11 +60,11 @@ class ImagePolicyFace(vatom: Vatom, face: Face, bridge: FaceBridge) : FaceView(v
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
     this.imageView = inflater.inflate(R.layout.view_blockv_native_image_policy, container, false) as ImageView
 
-    if (config.scale.toLowerCase() == "fill") {
-      this.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-    } else {
-      this.imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-    }
+      if (config.scale.lowercase(Locale.getDefault()) == "fill") {
+          this.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+      } else {
+          this.imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+      }
     return imageView
   }
 

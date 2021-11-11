@@ -12,6 +12,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.*
 
 internal class BridgeV1(
   bridge: FaceBridge,
@@ -65,7 +66,7 @@ internal class BridgeV1(
               val errorPayload = JSONObject()
                 .put(
                   "errorCode",
-                  if (it is MessageManager.MessageException) it.error.name.toLowerCase() else "viewer_error"
+                    if (it is MessageManager.MessageException) it.error.name.lowercase(Locale.getDefault()) else "viewer_error"
                 ).put(
                   "errorText",
                   it.message

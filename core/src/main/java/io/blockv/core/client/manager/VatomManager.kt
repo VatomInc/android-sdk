@@ -338,11 +338,11 @@ interface VatomManager {
 
       init {
         for (action in Action.values()) {
-          MAP.put(action.action().toLowerCase(), action)
+          MAP.put(action.action().lowercase(Locale.getDefault()), action)
         }
       }
 
-      fun from(action: String): Action? = MAP[action.toLowerCase()]
+        fun from(action: String): Action? = MAP[action.lowercase(Locale.getDefault())]
     }
   }
 }
