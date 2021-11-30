@@ -4,3 +4,14 @@ apply plugin: 'kotlin-android'
 dependencies {
 
 }
+
+android {
+    signingConfigs {
+        debug {
+            storeFile file('/Users/emmanuelconradie/android_key_store/android-viewer-open_key_store')
+            storePassword 'Vatoms'
+            keyAlias 'vatomsapp'
+            keyPassword 'Vatoms'
+        }
+    }
+}
